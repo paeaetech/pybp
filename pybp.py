@@ -83,7 +83,10 @@ class CommandResponsePairs:
 	RESET_BINARY = (Commands.RESET_BINARY,Responses.RESET_BINARY)
 	ENTER_SPI = (Commands.ENTER_SPI,Responses.ENTER_SPI)
 	ENTER_UART = (Commands.ENTER_UART,Responses.ENTER_UART)
-
+	ENTER_I2C = (Commands.ENTER_I2C,Responses.ENTER_I2C)
+	ENTER_1WIRE = (Commands.ENTER_1WIRE,Responses.ENTER_1WIRE)
+	ENTER_RAW = (Commands.ENTER_RAW,Responses.ENTER_RAW)
+	
 	TEST_EXIT = (Commands.TEST_EXIT,Responses.OK)
 
 	PWM_CLEAR = (Commands.PWM_CLEAR,Responses.OK)
@@ -169,9 +172,9 @@ class BusPirate(object):
 				pair = CommandResponsePairs.ENTER_SPI
 			elif mode == Modes.I2C:
 				pair = CommandResponsePairs.ENTER_I2C
-			elif self.mode == Modes.ONEWIRE:
+			elif mode == Modes.ONEWIRE:
 				pair = CommandResponsePairs.ENTER_1WIRE
-			elif self.mode == Modes.RAW:
+			elif mode == Modes.RAW:
 				pair = CommandResponsePairs.ENTER_RAW
 			else:
 				raise BusPirateError("Invalid mode '%s'" % mode)
@@ -192,7 +195,8 @@ class BusPirate(object):
 			
 		self._sendCmd(*CommandResponsePairs.RESET_BINARY)
 		self.mode = None
-
+		return True
+		
 	#pwm
 	def setPWM(self,dutycycle,hz):
 		"""Set AUX pin PWM
@@ -511,7 +515,12 @@ if __name__ == '__main__':
 			bp = BusPirate(device)
 			self.assertTrue(bp.selfTest())
 			
-		def testUartModes(self):
+		def testEnterInvalidMode(self):
+			bp = BusPirate(device)
+			
+			self.assertRaises(BusPirateError,bp.enterMode,'foo')
+			
+		def testUartMode(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.enterMode('uart'))
 			
@@ -522,6 +531,32 @@ if __name__ == '__main__':
 			self.assertTrue(bp.uartSetConfig())
 			
 			self.assertTrue(bp.uartSetPins())
+			self.assertTrue(bp.leaveMode())
+			
+		def testSpiMode(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.enterMode("SPI"))
+			
+			self.assertTrue(bp.leaveMode())
+
+		def testI2CMode(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.enterMode("I2C"))
+
+			self.assertTrue(bp.leaveMode())
+
+		def test1WireMode(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.enterMode("1WIRE"))
+
+			self.assertTrue(bp.leaveMode())
+
+		def testRawMode(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.enterMode("RAW"))
+
+			self.assertTrue(bp.leaveMode())
+
 
 		def testPWM(self):
 			bp = BusPirate(device)
