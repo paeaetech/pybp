@@ -116,7 +116,7 @@ class BusPirate(object):
 		self.baudrate = kwargs.pop('baudrate',115200)
 		self.serial = None
 		self.open()
-		
+	
 	"""Opens connection to BusPirate and enters binary mode. Closes existing connection if already open"""
 	def open(self):
 		self.close()
@@ -128,7 +128,7 @@ class BusPirate(object):
 		
 		self._enterBinaryMode()
 		
-	"""Closes connection to BusPirate"""
+	"""Resets BusPirate and closes serial connection"""
 	def close(self):
 		if self.serial:
 			self._sendCmd(Commands.RESET_USER)
@@ -166,6 +166,9 @@ class BusPirate(object):
 			Arguments:
 				mode -- "spi","uart","i2c","1wire","raw"
 		"""
+		if self.mode:
+			self.leaveMode()
+			
 		mode = mode.lower()
 		
 		try:
@@ -302,7 +305,10 @@ class BusPirate(object):
 		self._sendCmd(*CommandResponsePairs.PWM_CLEAR)
 		return True
 		
-	#uart mode commands
+	#uart functions
+	def uartEnter(self):
+		return self.enterMode("uart")
+	
 	def uartStartEcho(self):
 		"""Start uart echo mode. Received data can be """
 		self._checkMode(Modes.UART)
@@ -434,6 +440,129 @@ class BusPirate(object):
 		self._sendCmd(Commands.UART_ENTER_BRIDGE)
 		return self.serial
 		
+		
+	#i2c functions
+	def i2cEnter(self):
+		return self.enterMode("i2c")
+		
+	def i2cSendStart(self):
+		pass
+		
+	def i2cSendStop(self):
+		pass
+	def i2cSendAck(self):
+		pass
+	def i2cSendNack(self):
+		pass
+		
+	def i2cReadByte(self):
+		pass
+	
+	def i2cStartSniffer(self):
+		pass
+		
+	def i2cWrite(self,data):
+		pass
+		
+	def i2cSetPins(self,**kwargs):
+		pass
+		
+	def i2cSetSpeed(self,speed=400):
+		pass
+		
+	#spi functions
+	def spiEnter(self):
+		return self.enterMode("spi")
+		
+	def spiStartSniffer(self):
+		pass
+		
+	def spiSetSnifferMode(self,mode):
+		pass
+		
+	def spiWrite(self,data):
+		pass
+		
+	def spiWriteByte(self,data):
+		pass
+		
+	def spiSetSpeed(self,speed=30):
+		pass
+		
+	def spiGetSpeed(self):
+		pass
+		
+	def spiSetPins(self,**kwargs):
+		pass
+	
+	def spiGetPins(self):
+		pass
+		
+	def spiSetConfig(self,**kwargs):
+		pass
+		
+	def spiGetConfig(self):
+		pass
+		
+		
+	#1-wire functions
+	def onewireEnter(self):
+		return self.enterMode("1wire")
+		
+	def onewireReset(self):
+		pass
+		
+	def onewireReadByte(self):
+		pass
+		
+	def onewireSearchRom(self):
+		pass
+	
+	def onewireSearchAlarm(self):
+		pass
+		
+	def onewireWrite(self,data):
+		pass
+		
+	def onewireSetPins(self,**kwargs):
+		pass
+		
+	#raw functions
+	def rawEnter(self):
+		return self.enterMode("raw")
+		
+	def rawSetCS(self,pin=0):
+		pass
+		
+	def rawReadByte(self):
+		pass
+		
+	def rawReadBit(self):
+		pass
+		
+	def rawPeekInput(self):
+		pass
+		
+	def rawClockTick(self,ticks=1):
+		pass
+		
+	def rawSetClock(self,pin=0):
+		pass
+		
+	def rawSetData(self,pin=0):
+		pass
+		
+	def rawWrite(self,data):
+		pass
+	
+	def rawSetPins(self,**kwargs):
+		pass
+		
+	def rawSetSpeed(self,speed=5):
+		pass
+	
+	def rawSetConfig(self,**kwargs):
+		pass
 		
 	#internal functions
 	def _enterBinaryMode(self,short=False):
@@ -601,28 +730,33 @@ if __name__ == '__main__':
 			
 			self.assertTrue(bp.uartSetPins())
 			self.assertTrue(bp.leaveMode())
+			self.assertTrue(bp.uartEnter())
 			
 		def testSpiMode(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.enterMode("SPI"))
+			self.assertTrue(bp.spiEnter())
 			
 			self.assertTrue(bp.leaveMode())
 
 		def testI2CMode(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.enterMode("I2C"))
+			self.assertTrue(bp.i2cEnter())
 
 			self.assertTrue(bp.leaveMode())
 
 		def test1WireMode(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.enterMode("1WIRE"))
+			self.assertTrue(bp.onewireEnter())
 
 			self.assertTrue(bp.leaveMode())
 
 		def testRawMode(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.enterMode("RAW"))
+			self.assertTrue(bp.rawEnter())
 
 			self.assertTrue(bp.leaveMode())
 
@@ -644,6 +778,8 @@ if __name__ == '__main__':
 			bp = BusPirate(device)
 			self.assertTrue(0b1110000,bp.setPins(power=1,pullup=1))
 			self.assertTrue(0b1000000,bp.setPins())
+
+
 
 			
 	import re
