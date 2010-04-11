@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import serial
-
+import time
 
 
 #exceptions
@@ -182,7 +182,9 @@ class BusPirate(object):
 			
 		except CommandError as err:
 			raise BusPirateError(err)
-	
+
+		return True
+		
 	def leaveMode(self):
 		"""Leave protocol mode"""
 		if not self.mode:
@@ -206,10 +208,12 @@ class BusPirate(object):
 		self._checkMode(Modes.UART)
 		self._sendCmd(*CommandResponsePairs.UART_START_ECHO)
 		self._uartEcho = True
-
+		return True
+		
 	def uartStopEcho(self):
 		self._checkMode(Modes.UART)
 		self._sendCmd(*CommandResponsePairs.UART_STOP_ECHO)
+		return True
 		
 	def uartWrite(self,data):
 		"""Writes data to uart"""
@@ -218,8 +222,9 @@ class BusPirate(object):
 			raise BusPirateError("Not in UART echo mode")
 		
 		#Up to 16 data bytes can be sent at once.
+		#TODO: implement >16byte transfer
 		if len(data) <= 16:
-			cmd = Commands.UART_WRITE | (len(data)-1) #Note that 0000 indicates 1 byte because there’s no reason to send 0
+			cmd = chr(ord(Commands.UART_WRITE) | (len(data)-1)) #Note that 0000 indicates 1 byte because there’s no reason to send 0
 			self._sendCmd(cmd,Responses.OK)
 			
 			for c in data:
@@ -228,6 +233,8 @@ class BusPirate(object):
 					raise BusPirateError("uartWrite received invalid response")
 		else:
 			raise NotImplementedError(">16byte uartwrite")
+
+		return True
 	
 	def uartBytesAvailable(self):
 		self._checkMode(Modes.UART)
@@ -247,12 +254,13 @@ class BusPirate(object):
 		"""configures uart baudrate"""
 		self._checkMode(Modes.UART)
 
-		rates = { 300 : chr(0),  1200 : chr(0b0001), 2400: chr(0b0010),4800 : chr(0b0011),9600 : chr(0b0100),19200: chr(0b0101),31250 : chr(0b0110), 38400 : chr(0b0111),57600 : chr(0b1000),115200 : chr(0b1010)}
+		rates = { 300 : 0,  1200 : 0b0001, 2400: 0b0010,4800 : 0b0011,9600 : 0b0100,19200: 0b0101,31250 : 0b0110, 38400 : 0b0111,57600 : 0b1000,115200 : 0b1010}
 		
 		if baudrate not in rates:
 			raise BusPirateError("Invalid baudrate '%d'" % baudrate)
 		
-		self._sendCmd(Commands.UART_SET_BAUDRATE|rates[baudrate],Responses.OK)
+		self._sendCmd(chr(ord(Commands.UART_SET_BAUDRATE)|rates[baudrate]),Responses.OK)
+		return True
 		
 	def uartSetPins(self,**kwargs):
 		"""Configure peripherals.
@@ -268,9 +276,10 @@ class BusPirate(object):
 		pullups = kwargs.pop("pullups",0)
 		aux = kwargs.pop("aux",0)
 		cs = kwargs.pop("cs",0)
-		cmd = Commands.UART_SET_PINS | (power << 3) | (pullups << 2) | (aux << 1) | cs
+		cmd = chr(ord(Commands.UART_SET_PINS) | (power << 3) | (pullups << 2) | (aux << 1) | cs)
 		
 		self._sendCmd(cmd,Responses.OK)
+		return True
 		
 	def uartSetConfig(self,**kwargs):
 		"""Set UART configuration.
@@ -314,10 +323,11 @@ class BusPirate(object):
 		else:
 			raise BusPirateError("Databits value is invalid.")
 		
-		self._sendCmd(Commands.UART_SET_CONFIG | (output<<4) | (dp << 3) | (stopbits << 1) | polarity,Responses.OK)
-	
+		self._sendCmd(chr(ord(Commands.UART_SET_CONFIG) | (output<<4) | (dp << 3) | (stopbits << 1) | polarity),Responses.OK)
+		return True
+		
 	def uartBridgeMode(self):
-		"""Enters UART bridge mode. Bridge mode cannot be exited programmatically, Bus Pirate has to be reseted manually.
+		"""Enters UART bridge mode. NOTE: Bridge mode cannot be exited programmatically, Bus Pirate has to be reseted manually.
 			Returns: serial instance which can be used directly
 		"""
 		self._checkMode(Modes.UART)
@@ -338,19 +348,25 @@ class BusPirate(object):
 				#TODO: this is a very naive version,make it better
 				for i in range(10):
 					self._write('\n')
-				self._write('#')
-				for i in range(20):
-					self._write(chr(0))
-						
+					time.sleep(0.001)
+
+				self._write('#\n')
+				time.sleep(0.001)
+				
+				for i in range(25):
+					self._write(chr(0x0))
+					time.sleep(0.01)
+					
 				#read binary mode protocol version
-				result = self._read(5)
-				if result:
-					if result == Responses.RESET_BINARY:
-						return True
+				time.sleep(0.5)
+				result = self._read(self._available())
+
+				if result and result.endswith(Responses.RESET_BINARY):
+					return True
 
 				raise BusPirateError("Failed to enter binary mode")
 			except SerialError:
-				raise BusPirateError("Exception raised while trying to enter binary mode")
+				raise BusPirateError("Serial exception raised while trying to enter binary mode")
 
 	def _getResponse(self):
 		return self.lastresponse
@@ -386,10 +402,14 @@ class BusPirate(object):
 		if not self.mode or self.mode != mode:
 			raise BusPirateError("Not in protocol mode '%s'" % mode)
 	
-	
+	def _printhex(self,data):
+		s = [hex(ord(x)) for x in data]
+		print s
+		
 if __name__ == '__main__':
 	import unittest
 	import re
+	device = None
 	#simulates bus pirate
 	class MockBP(serial.Serial):
 		def __init__(self,**kwargs):
@@ -431,8 +451,9 @@ if __name__ == '__main__':
 						self._output('ART1')
 					elif cmd == Commands.ENTER_SPI:
 						self._output('SPI1')
-				
-	class BPTest(unittest.TestCase):
+	
+	#tests that use mock object
+	class BPTestMock(unittest.TestCase):
 		def testFailBinmode(self):
 			self.assertRaises(BusPirateError,lambda: BusPirate(None,unittestserial=MockBP(failbinmode=True)))
 			
@@ -450,6 +471,59 @@ if __name__ == '__main__':
 			bp = BusPirate(None,unittestserial=MockBP())
 			bp.enterMode('UART')
 
+	#tests that use real device
+	class BPTestReal(unittest.TestCase):
+		def testEnterBinmode(self):
+			bp = BusPirate(device)
+		
+		def testShortSelfTest(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.selfTest())
 			
+		def testUartModes(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.enterMode('uart'))
 			
-	unittest.main()
+			self.assertTrue(bp.uartSetPins(power=1))
+			self.assertTrue(bp.uartSetSpeed(300))
+			self.assertTrue(bp.uartSetSpeed(9600))
+			self.assertTrue(bp.uartSetConfig(output=1,parity='e'))
+			self.assertTrue(bp.uartSetConfig())
+			
+			self.assertTrue(bp.uartSetPins())
+
+		def testPWM(self):
+			bp = BusPirate(device)
+			self.assertTrue(bp.setPWM(2500))
+			self.assertTrue(bp.clearPWM())
+
+		
+			
+	import re
+	import os
+	suiteMock = None
+	testloader = unittest.TestLoader()
+#	suiteMock = testloader.loadTestsFromTestCase(BPTestMock)
+
+	files = os.listdir("/dev")
+	usbdevices = []
+	for f in files:
+		if f.startswith("tty.usbserial"):
+			usbdevices.append("/dev/"+f)
+			
+	if len(usbdevices) > 0:
+		suiteReal = testloader.loadTestsFromTestCase(BPTestReal)
+		device = usbdevices[0]
+		if len(usbdevices) > 1:
+			print "Warning: multiple usbserial devices found, selecting %s" % device
+
+	else:
+		suiteReal=None
+		print "BusPirate not found, disabling real device tests"
+	
+	if suiteMock:
+		unittest.TextTestRunner(verbosity=2).run(suiteMock)
+	if suiteReal:
+		unittest.TextTestRunner(verbosity=2).run(suiteReal)
+	
+#	unittest.main()
