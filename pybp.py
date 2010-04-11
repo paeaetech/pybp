@@ -17,6 +17,7 @@
 
 import serial
 import time
+import struct
 
 
 #exceptions
@@ -64,6 +65,10 @@ class Commands:
 	#pwm
 	PWM_SET = chr(0b10010)
 	PWM_CLEAR = chr(0b10011)
+
+	#pins
+	CONFIG_PINS = chr(0b01000000)
+	SET_PINS = chr(0b10000000)
 
 	#probes
 	PROBE_VOLTAGE = chr(0b10100)
@@ -196,7 +201,67 @@ class BusPirate(object):
 		self._sendCmd(*CommandResponsePairs.RESET_BINARY)
 		self.mode = None
 		return True
+	
+	#voltage probe
+	def probeVoltage(self):
+		self._write(Commands.PROBE_VOLTAGE)
+		data = self._read(2)
 		
+		v, = struct.unpack('>H',data)
+		
+		return (float(v)/1024)*6.6
+		
+	def configPins(self,**kwargs):
+		"""Configure AUX,MOSI,CLK,MISO and CS as inputs (1) or outputs (0).
+			Keyworded arguments:
+				aux -- defaults to 1
+				mosi -- defaults to 1
+				clk -- defaults to 1
+				miso -- defaults to 1
+				cs -- defauls to 1
+			Returns:
+				pin directions after update
+		"""
+		
+		aux = kwargs.pop('aux',1)
+		mosi = kwargs.pop('mosi',1)
+		miso = kwargs.pop('miso',1)
+		clk = kwargs.pop('clk',1)
+		cs = kwargs.pop('cs',1)
+
+		pins = (aux<<4) | (mosi<<3) | (clk<<2) | (miso<<1) | cs
+		self._write(chr(ord(Commands.CONFIG_PINS)|pins))
+		
+		pins = self._read(1)
+		return pins
+	
+	def setPins(self,**kwargs):
+		"""Set pins POWER,AUX,MOSI,CLK,MISO,CS and PULLUP on (1) or off (0).
+			Keyworded arguments:
+				power -- defaults to 0
+				pullup -- defaults to 0
+				aux -- defaults to 0
+				mosi -- defaults to 0
+				clk -- defaults to 0
+				miso -- defaults to 0
+				cs -- defauls to 0
+			Returns:
+				pin state after update
+		"""
+		power = kwargs.pop("power",0)
+		aux = kwargs.pop('aux',0)
+		mosi = kwargs.pop('mosi',0)
+		miso = kwargs.pop('miso',0)
+		clk = kwargs.pop('clk',0)
+		cs = kwargs.pop('cs',0)
+		pullup = kwargs.pop('pullup',0)
+		
+		pins = (power<<6)| (pullup<<5)| (aux<<4) | (mosi<<3) | (clk<<2) | (miso<<1) | cs
+		self._write(chr(ord(Commands.SET_PINS)|pins))
+		
+		pins = self._read(1)
+		return pins
+	
 	#pwm
 	def setPWM(self,dutycycle,hz):
 		"""Set AUX pin PWM
@@ -421,7 +486,11 @@ class BusPirate(object):
 		
 	def _read(self,length):
 		try:
-			ret = self.serial.read(length)
+			ret = ""
+			i=0
+			while len(ret) < length and i < 10:
+				ret += self.serial.read(length)
+				i+=1
 		except: 
 			return None
 		return ret
@@ -557,13 +626,25 @@ if __name__ == '__main__':
 
 			self.assertTrue(bp.leaveMode())
 
+		def testProbeVoltage(self):
+			bp = BusPirate(device)
+			self.assertEqual(0.0,bp.probeVoltage())
 
 		def testPWM(self):
 			bp = BusPirate(device)
 			self.assertTrue(bp.setPWM(0.5,2500))
 			self.assertTrue(bp.stopPWM())
 
-		
+		def testConfigPins(self):
+			bp = BusPirate(device)
+			self.assertTrue(0b01010100,bp.configPins(aux=1,clk=1))
+			self.assertTrue(0b01000000,bp.configPins())
+
+		def testSetPins(self):
+			bp = BusPirate(device)
+			self.assertTrue(0b1110000,bp.setPins(power=1,pullup=1))
+			self.assertTrue(0b1000000,bp.setPins())
+
 			
 	import re
 	import os
