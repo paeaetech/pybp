@@ -77,7 +77,7 @@ class Responses:
 	ENTER_1WIRE = '1W01'
 	ENTER_RAW = 'RAW1'
 
-	OK = chr(0x1)
+	OK = chr(0x1) #generic OK response for most commands
 
 class CommandResponsePairs:
 	RESET_BINARY = (Commands.RESET_BINARY,Responses.RESET_BINARY)
@@ -194,13 +194,44 @@ class BusPirate(object):
 		self.mode = None
 
 	#pwm
-	def setPWM(self,hz):
-		"""TODO: decide parameters and implement"""
-		raise NotImplementedError
+	def setPWM(self,dutycycle,hz):
+		"""Set AUX pin PWM
+			Arguments:
+				duty -- dutycycle 0.0 - 1.0
+				hz -- pwm frequency
+		"""
+		prescaler = 0
+		period = 0
+		div = 0
+		#adapted from bus pirate sources
+		if hz < 4:
+			prescaler=0b11
+			div = 62
+		elif hz < 31:
+			div = 250
+			prescaler = 0b10
+		elif hz < 245:
+			div = 2000
+			prescaler = 0b01
+		else:
+			div = 16000
+		
+		if dutycycle < 0.0:
+			dutycycle = 0.0
+		elif dutycycle > 1.0:
+			dutycycle=1.0
+		
+		period = int((div / hz)-1)
+		duty = int(period  * dutycycle)
+		
+		cmd = [ Commands.PWM_SET, chr(prescaler),chr(duty>>8),chr(duty&0xff),chr(period>>8),chr(period&0xff)]
+		self._sendCmd("".join(cmd),Responses.OK)
+		return True
 		
 	def stopPWM(self):
 		"""Stop outputting PWM"""
 		self._sendCmd(*CommandResponsePairs.PWM_CLEAR)
+		return True
 		
 	#uart mode commands
 	def uartStartEcho(self):
@@ -349,14 +380,13 @@ class BusPirate(object):
 				for i in range(10):
 					self._write('\n')
 					time.sleep(0.001)
-
+					
 				self._write('#\n')
 				time.sleep(0.001)
 				
 				for i in range(25):
 					self._write(chr(0x0))
-					time.sleep(0.01)
-					
+					time.sleep(0.001)
 				#read binary mode protocol version
 				time.sleep(0.5)
 				result = self._read(self._available())
@@ -374,6 +404,7 @@ class BusPirate(object):
 	def _sendCmd(self,cmd,expect=None):
 		self._write(cmd)
 		if expect:
+			time.sleep(0.001) #maybe not necessary
 			response = self._read(len(expect))
 			self.lastresponse = response
 			if response != expect:
@@ -397,7 +428,7 @@ class BusPirate(object):
 		except serial.SerialTimeoutException:
 			raise SerialError("_write timeout")
 		return ret
-
+		
 	def _checkMode(self,mode):
 		if not self.mode or self.mode != mode:
 			raise BusPirateError("Not in protocol mode '%s'" % mode)
@@ -494,8 +525,8 @@ if __name__ == '__main__':
 
 		def testPWM(self):
 			bp = BusPirate(device)
-			self.assertTrue(bp.setPWM(2500))
-			self.assertTrue(bp.clearPWM())
+			self.assertTrue(bp.setPWM(0.5,2500))
+			self.assertTrue(bp.stopPWM())
 
 		
 			
