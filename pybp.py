@@ -755,69 +755,9 @@ if __name__ == '__main__':
 	import unittest
 	import re
 	device = None
-	#simulates bus pirate
-	class MockBP(serial.Serial):
-		def __init__(self,**kwargs):
-			super(MockBP,self).__init__(None)
-			self.input = ""
-			self.output = ""
-			self.args = kwargs
-			self.binmode = False
-			
-		def write(self,data):
-			self.input += data
-			self.processInput()
-			
-		def read(self,size=1):
-			if len(self.output) < size:
-				size = len(self.output)
-			
-			data = self.output[:size]
-			self.output = self.output[size:]
-			return data
-		
-		def _output(self,data):
-			self.output += data
-		
-		def inWaiting(self):
-			return len(self.output)
-		
-		def processInput(self):
-			if not self.binmode:
-				if "failbinmode" in self.args:
-					return
-				if re.search('\000{20}$',self.input):
-					self._output('BBIO1')
-					self.binmode=True
-			else:
-				cmd = self.input[-1:]
-				if "failmode" not in self.args:
-					if cmd == Commands.ENTER_UART:
-						self._output('ART1')
-					elif cmd == Commands.ENTER_SPI:
-						self._output('SPI1')
-	
-	#tests that use mock object
-	class BPTestMock(unittest.TestCase):
-		def testFailBinmode(self):
-			self.assertRaises(BusPirateError,lambda: BusPirate(None,unittestserial=MockBP(failbinmode=True)))
-			
-		def testSuccessBinmode(self):
-			BusPirate(None,unittestserial=MockBP())
-			
-		def testInvalidModes(self):
-			modes = ["adjhf","fjskd","aurt","isp"]
-			bp = BusPirate(None,unittestserial=MockBP())
-			
-			for mode in modes:
-				self.assertRaises(BusPirateError,bp.enterMode,mode)
-				
-		def testUartMode(self):
-			bp = BusPirate(None,unittestserial=MockBP())
-			bp.enterMode('UART')
 
 	#tests that use real device
-	class BPTestReal(unittest.TestCase):
+	class BPTests(unittest.TestCase):
 		def testEnterBinmode(self):
 			bp = BusPirate(device)
 		
@@ -897,9 +837,6 @@ if __name__ == '__main__':
 			
 	import re
 	import os
-	suiteMock = None
-	testloader = unittest.TestLoader()
-#	suiteMock = testloader.loadTestsFromTestCase(BPTestMock)
 
 	files = os.listdir("/dev")
 	usbdevices = []
@@ -908,18 +845,15 @@ if __name__ == '__main__':
 			usbdevices.append("/dev/"+f)
 			
 	if len(usbdevices) > 0:
-		suiteReal = testloader.loadTestsFromTestCase(BPTestReal)
+
 		device = usbdevices[0]
 		if len(usbdevices) > 1:
 			print "Warning: multiple usbserial devices found, selecting %s" % device
 
+		suite = unittest.TestLoader().loadTestsFromTestCase(BPTests)
+		unittest.TextTestRunner(verbosity=2).run(suite)
 	else:
-		suiteReal=None
-		print "BusPirate not found, disabling real device tests"
-	
-	if suiteMock:
-		unittest.TextTestRunner(verbosity=2).run(suiteMock)
-	if suiteReal:
-		unittest.TextTestRunner(verbosity=2).run(suiteReal)
-	
+		print "BusPirate not found, cannot run tests"
+
+		
 #	unittest.main()
