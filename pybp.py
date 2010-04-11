@@ -55,7 +55,6 @@ class Commands:
 	UART_WRITE = chr(0b10000)
 	UART_SET_BAUDRATE = chr(0b01100000)
 	UART_SET_CONFIG = chr(0b10000000)	
-	UART_SET_PINS = chr(0b01000000)
 	UART_ENTER_BRIDGE = chr(0b1111)
 	
 	#tests
@@ -378,14 +377,7 @@ class BusPirate(object):
 		"""
 		self._checkMode(Modes.UART)
 		
-		power = kwargs.pop("power",0)
-		pullups = kwargs.pop("pullups",0)
-		aux = kwargs.pop("aux",0)
-		cs = kwargs.pop("cs",0)
-		cmd = chr(ord(Commands.UART_SET_PINS) | (power << 3) | (pullups << 2) | (aux << 1) | cs)
-		
-		self._sendCmd(cmd,Responses.OK)
-		return True
+		return self._setPins(**kwargs)
 		
 	def uartSetConfig(self,**kwargs):
 		"""Set UART configuration.
@@ -414,6 +406,9 @@ class BusPirate(object):
 		
 		#combine databits and parity
 		dp = 0
+		if parity not in 'eno':
+			raise BusPirateError("Parity is invalid")
+			
 		if databits == 9:
 			if parity == 'e':
 				raise BusPirateError("Parity cannot be even if databits is 9")
@@ -479,9 +474,17 @@ class BusPirate(object):
 		raise NotImplementedError
 		
 	def i2cSetPins(self,**kwargs):
+		"""Configure peripherals.
+			Keyword arguments:
+				power  -- defaults to 0
+				pullups -- defaults to 0
+				aux -- defaults to 0
+				cs -- defaults to 0
+		"""
+
 		self._checkMode(Modes.I2C)
 
-		raise NotImplementedError
+		return self._setPins(**kwargs)
 		
 	def i2cSetSpeed(self,speed=400):
 		self._checkMode(Modes.I2C)
@@ -523,9 +526,17 @@ class BusPirate(object):
 		raise NotImplementedError
 		
 	def spiSetPins(self,**kwargs):
+		"""Configure peripherals.
+			Keyword arguments:
+				power  -- defaults to 0
+				pullups -- defaults to 0
+				aux -- defaults to 0
+				cs -- defaults to 0
+		"""
+
 		self._checkMode(Modes.SPI)
 
-		raise NotImplementedError
+		return self._setPins(**kwargs)
 	
 	def spiGetPins(self):
 		self._checkMode(Modes.SPI)
@@ -575,9 +586,17 @@ class BusPirate(object):
 		raise NotImplementedError
 		
 	def onewireSetPins(self,**kwargs):
+		"""Configure peripherals.
+			Keyword arguments:
+				power  -- defaults to 0
+				pullups -- defaults to 0
+				aux -- defaults to 0
+				cs -- defaults to 0
+		"""
+
 		self._checkMode(Modes.ONEWIRE)
 
-		raise NotImplementedError
+		return self._setPins(**kwargs)
 		
 	#raw functions
 	def rawEnter(self):
@@ -624,9 +643,17 @@ class BusPirate(object):
 		raise NotImplementedError
 	
 	def rawSetPins(self,**kwargs):
+		"""Configure peripherals.
+			Keyword arguments:
+				power  -- defaults to 0
+				pullups -- defaults to 0
+				aux -- defaults to 0
+				cs -- defaults to 0
+		"""
+		
 		self._checkMode(Modes.RAW)
 
-		raise NotImplementedError
+		return self._setPins(**kwargs)
 		
 	def rawSetSpeed(self,speed=5):
 		self._checkMode(Modes.RAW)
@@ -639,6 +666,16 @@ class BusPirate(object):
 		raise NotImplementedError
 		
 	#internal functions
+	def _setPins(self,**kwargs):
+		power = kwargs.pop("power",0)
+		pullups = kwargs.pop("pullups",0)
+		aux = kwargs.pop("aux",0)
+		cs = kwargs.pop("cs",0)
+		cmd = chr(ord(Commands.CONFIG_PINS) | (power << 3) | (pullups << 2) | (aux << 1) | cs)
+		
+		self._sendCmd(cmd,Responses.OK)
+		return True
+		
 	def _enterBinaryMode(self,short=False):
 		#From the manual: Send 0x00 to the user terminal 20 times to enter the raw binary bitbang mode.
 		#				One way to ensure that you're at the command line is to send <enter> at least 10 times, 
@@ -712,7 +749,8 @@ class BusPirate(object):
 	def _printhex(self,data):
 		s = [hex(ord(x)) for x in data]
 		print s
-		
+
+#unittests
 if __name__ == '__main__':
 	import unittest
 	import re
@@ -800,6 +838,7 @@ if __name__ == '__main__':
 			self.assertTrue(bp.uartSetSpeed(300))
 			self.assertTrue(bp.uartSetSpeed(9600))
 			self.assertTrue(bp.uartSetConfig(output=1,parity='e'))
+			self.assertRaises(BusPirateError,bp.uartSetConfig,output=1,parity='d')
 			self.assertTrue(bp.uartSetConfig())
 			
 			self.assertTrue(bp.uartSetPins())
