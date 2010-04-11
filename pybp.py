@@ -446,123 +446,197 @@ class BusPirate(object):
 		return self.enterMode("i2c")
 		
 	def i2cSendStart(self):
-		pass
+		self._checkMode(Modes.I2C)
+		raise NotImplementedError
 		
 	def i2cSendStop(self):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
+		
 	def i2cSendAck(self):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 	def i2cSendNack(self):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 		
 	def i2cReadByte(self):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 	
 	def i2cStartSniffer(self):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 		
 	def i2cWrite(self,data):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 		
 	def i2cSetPins(self,**kwargs):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 		
 	def i2cSetSpeed(self,speed=400):
-		pass
+		self._checkMode(Modes.I2C)
+
+		raise NotImplementedError
 		
 	#spi functions
 	def spiEnter(self):
 		return self.enterMode("spi")
 		
 	def spiStartSniffer(self):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiSetSnifferMode(self,mode):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiWrite(self,data):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiWriteByte(self,data):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiSetSpeed(self,speed=30):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiGetSpeed(self):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiSetPins(self,**kwargs):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 	
 	def spiGetPins(self):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiSetConfig(self,**kwargs):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 	def spiGetConfig(self):
-		pass
+		self._checkMode(Modes.SPI)
+
+		raise NotImplementedError
 		
 		
 	#1-wire functions
 	def onewireEnter(self):
+		self._checkMode(Modes.ONEWIRE)
+
 		return self.enterMode("1wire")
 		
 	def onewireReset(self):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 		
 	def onewireReadByte(self):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 		
 	def onewireSearchRom(self):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 	
 	def onewireSearchAlarm(self):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 		
 	def onewireWrite(self,data):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 		
 	def onewireSetPins(self,**kwargs):
-		pass
+		self._checkMode(Modes.ONEWIRE)
+
+		raise NotImplementedError
 		
 	#raw functions
 	def rawEnter(self):
 		return self.enterMode("raw")
 		
 	def rawSetCS(self,pin=0):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawReadByte(self):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawReadBit(self):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawPeekInput(self):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawClockTick(self,ticks=1):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawSetClock(self,pin=0):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawSetData(self,pin=0):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawWrite(self,data):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 	
 	def rawSetPins(self,**kwargs):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	def rawSetSpeed(self,speed=5):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 	
 	def rawSetConfig(self,**kwargs):
-		pass
+		self._checkMode(Modes.RAW)
+
+		raise NotImplementedError
 		
 	#internal functions
 	def _enterBinaryMode(self,short=False):
