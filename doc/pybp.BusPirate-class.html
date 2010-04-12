@@ -44,8 +44,6 @@
     <td>
       <table cellpadding="0" cellspacing="0">
         <!-- hide/show private -->
-        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
-    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
         <tr><td align="right"><span class="options"
             >[<a href="frames.html" target="_top">frames</a
             >]&nbsp;|&nbsp;<a href="pybp.BusPirate-class.html"
@@ -63,27 +61,15 @@ object --+
 </pre>
 
 <hr />
-<p>BusPirate interface class</p>
-  <p>If not otherwise stated, all functions return True or raise 
-  BusPirateError if command fails. Also ValueError is raised if function 
-  parameters are invalid.</p>
+<p>BusPirate interface class.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Instance Methods</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-InstanceMethods"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Instance Methods</span></td>
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
@@ -140,7 +126,7 @@ object --+
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">bool</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -193,11 +179,12 @@ object --+
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">float</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="probeVoltage"></a><span class="summary-sig-name">probeVoltage</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#probeVoltage" class="summary-sig-name">probeVoltage</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Perform AUX pin voltage measurement.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pybp-pysrc.html#BusPirate.probeVoltage">source&nbsp;code</a></span>
             
@@ -209,7 +196,7 @@ object --+
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">int</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -227,7 +214,7 @@ object --+
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
+      <span class="summary-type">int</span>
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
@@ -268,162 +255,10 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="stopPWM"></a><span class="summary-sig-name">stopPWM</span>(<span class="summary-sig-arg">self</span>)</span><br />
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#stopPWM" class="summary-sig-name">stopPWM</a>(<span class="summary-sig-arg">self</span>)</span><br />
       Stop outputting PWM</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pybp-pysrc.html#BusPirate.stopPWM">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_setPins"></a><span class="summary-sig-name">_setPins</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">**kwargs</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._setPins">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_enterBinaryMode"></a><span class="summary-sig-name">_enterBinaryMode</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">short</span>=<span class="summary-sig-default">False</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._enterBinaryMode">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_getResponse"></a><span class="summary-sig-name">_getResponse</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._getResponse">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_sendCmd"></a><span class="summary-sig-name">_sendCmd</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">cmd</span>,
-        <span class="summary-sig-arg">expect</span>=<span class="summary-sig-default">None</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._sendCmd">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_available"></a><span class="summary-sig-name">_available</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._available">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_read"></a><span class="summary-sig-name">_read</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">length</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._read">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_write"></a><span class="summary-sig-name">_write</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">data</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._write">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_checkMode"></a><span class="summary-sig-name">_checkMode</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">mode</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._checkMode">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_printhex"></a><span class="summary-sig-name">_printhex</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">data</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pybp-pysrc.html#BusPirate._printhex">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -491,7 +326,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="uartStopEcho"></a><span class="summary-sig-name">uartStopEcho</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#uartStopEcho" class="summary-sig-name">uartStopEcho</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Stop uart echo mode.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartStopEcho">source&nbsp;code</a></span>
             
@@ -507,7 +343,7 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="uartWrite"></a><span class="summary-sig-name">uartWrite</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#uartWrite" class="summary-sig-name">uartWrite</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">data</span>)</span><br />
       Writes data to uart</td>
           <td align="right" valign="top">
@@ -525,7 +361,8 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="uartBytesAvailable"></a><span class="summary-sig-name">uartBytesAvailable</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#uartBytesAvailable" class="summary-sig-name">uartBytesAvailable</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns number of bytes avaiable in uart echo mode.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartBytesAvailable">source&nbsp;code</a></span>
             
@@ -541,8 +378,9 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="uartReceive"></a><span class="summary-sig-name">uartReceive</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">1</span>)</span></td>
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#uartReceive" class="summary-sig-name">uartReceive</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">1</span>)</span><br />
+      Receive bytes in uart echo mode.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartReceive">source&nbsp;code</a></span>
             
@@ -558,7 +396,7 @@ object --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="uartSetSpeed"></a><span class="summary-sig-name">uartSetSpeed</span>(<span class="summary-sig-arg">self</span>,
+          <td><span class="summary-sig"><a href="pybp.BusPirate-class.html#uartSetSpeed" class="summary-sig-name">uartSetSpeed</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">baudrate</span>=<span class="summary-sig-default">9600</span>)</span><br />
       configures uart baudrate</td>
           <td align="right" valign="top">
@@ -1304,17 +1142,8 @@ object --+
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Properties</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-Properties"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Properties</span></td>
 </tr>
   <tr>
     <td colspan="2" class="summary">
@@ -1329,17 +1158,8 @@ object --+
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Method Details</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-MethodDetails"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
+  <td align="left" colspan="2" class="table-header">
+    <span class="table-header">Method Details</span></td>
 </tr>
 </table>
 <a name="__init__"></a>
@@ -1367,6 +1187,10 @@ object --+
         <li><strong class="pname"><code>port</code></strong> - serial port to use</li>
         <li><strong class="pname"><code>baudrate</code></strong> - baudrate to use, defaults to 115200</li>
     </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if cannot enter Binary mode</li>
+    </ul></dd>
     <dt>Overrides:
         object.__init__
     </dt>
@@ -1390,6 +1214,10 @@ object --+
   <p>Opens connection to BusPirate and enters binary mode. Closes existing 
   connection if already open</p>
   <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if cannot enter Binary mode</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1415,6 +1243,8 @@ object --+
         <li><strong class="pname"><code>longTest</code></strong> - Perform long self-test. Requires jumpers between +5 and Vpu, +3.3
           and ADC. Defaults to False</li>
     </ul></dd>
+    <dt>Returns: bool</dt>
+        <dd>True or False</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1439,6 +1269,32 @@ object --+
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>mode</code></strong> - &quot;spi&quot;,&quot;uart&quot;,&quot;i2c&quot;,&quot;1wire&quot;,&quot;raw&quot;</li>
     </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails</li>
+        <li><code><strong class='fraise'>ValueError</strong></code> - if parameters are invalid</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="probeVoltage"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">probeVoltage</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.probeVoltage">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Perform AUX pin voltage measurement.</p>
+  <dl class="fields">
+    <dt>Returns: float</dt>
+        <dd>measured voltage.</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1467,7 +1323,7 @@ object --+
         <li><strong class="pname"><code>miso</code></strong> - defaults to 1</li>
         <li><strong class="pname"><code>cs</code></strong> - defauls to 1</li>
     </ul></dd>
-    <dt>Returns:</dt>
+    <dt>Returns: int</dt>
         <dd>pin directions after update</dd>
   </dl>
 </td></tr></table>
@@ -1499,7 +1355,7 @@ object --+
         <li><strong class="pname"><code>miso</code></strong> - defaults to 0</li>
         <li><strong class="pname"><code>cs</code></strong> - defauls to 0</li>
     </ul></dd>
-    <dt>Returns:</dt>
+    <dt>Returns: int</dt>
         <dd>pin state after update</dd>
   </dl>
 </td></tr></table>
@@ -1530,6 +1386,29 @@ object --+
   </dl>
 </td></tr></table>
 </div>
+<a name="stopPWM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">stopPWM</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.stopPWM">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Stop outputting PWM</p>
+  <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
 <a name="uartStartEcho"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -1544,8 +1423,140 @@ object --+
     </td>
   </tr></table>
   
-  <p>Start uart echo mode. Received data can be</p>
+  <p>Start uart echo mode. Incoming data can be inspected with 
+  uartBytesAvailable and uartReceive</p>
   <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uartStopEcho"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">uartStopEcho</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartStopEcho">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Stop uart echo mode.</p>
+  <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uartWrite"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">uartWrite</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">data</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartWrite">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Writes data to uart</p>
+  <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uartBytesAvailable"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">uartBytesAvailable</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartBytesAvailable">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns number of bytes avaiable in uart echo mode.</p>
+  <dl class="fields">
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uartReceive"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">uartReceive</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">size</span>=<span class="sig-default">1</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartReceive">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Receive bytes in uart echo mode.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>size</code></strong> - number of bytes to read</li>
+    </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="uartSetSpeed"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">uartSetSpeed</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">baudrate</span>=<span class="sig-default">9600</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="pybp-pysrc.html#BusPirate.uartSetSpeed">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>configures uart baudrate</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>baudrate</code></strong> - 300,1200,2400,4800,9600,19200,31250,28400,57600,115200</li>
+    </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+        <li><code><strong class='fraise'>ValueError</strong></code> - if parameter is invalid</li>
+    </ul></dd>
   </dl>
 </td></tr></table>
 </div>
@@ -1572,6 +1583,10 @@ object --+
         <li><strong class="pname"><code>pullups</code></strong> - defaults to 0</li>
         <li><strong class="pname"><code>aux</code></strong> - defaults to 0</li>
         <li><strong class="pname"><code>cs</code></strong> - defaults to 0</li>
+    </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -1600,6 +1615,11 @@ object --+
         <li><strong class="pname"><code>parity</code></strong> - 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'</li>
         <li><strong class="pname"><code>stopbits</code></strong> - stop bits , defaults to 1</li>
         <li><strong class="pname"><code>polarity</code></strong> - 0 = idle high, 1 = idle low, defaults to idle high (0)</li>
+    </ul></dd>
+    <dt>Raises:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code><strong class='fraise'><a href="pybp.BusPirateError-class.html">BusPirateError</a></strong></code> - if command fails.</li>
+        <li><code><strong class='fraise'>ValueError</strong></code> - if parameters are invalid.</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -1761,7 +1781,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Apr 12 13:54:07 2010
+    Generated by Epydoc 3.0.1 on Mon Apr 12 14:10:05 2010
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

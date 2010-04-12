@@ -97,16 +97,14 @@ class CommandResponsePairs:
 	
 	
 class BusPirate(object):
-	"""BusPirate interface class
-	
-		If not otherwise stated, all functions return True or raise BusPirateError if command fails.
-		Also ValueError is raised if function parameters are invalid.
+	"""BusPirate interface class.
 	"""
 	
 	def __init__(self, port,**kwargs):
 		"""
 			@param port: serial port to use
 			@keyword baudrate: baudrate to use, defaults to 115200
+			@raise BusPirateError: if cannot enter Binary mode
 		"""
 		super(BusPirate, self).__init__()
 
@@ -119,7 +117,9 @@ class BusPirate(object):
 		self.open()
 	
 	def open(self):
-		"""Opens connection to BusPirate and enters binary mode. Closes existing connection if already open"""
+		"""Opens connection to BusPirate and enters binary mode. Closes existing connection if already open
+			@raise BusPirateError: if cannot enter Binary mode
+		"""
 		self.close()
 		self.serial = self.unittestSerial or serial.Serial(self.port,self.baudrate)
 		self.serial.timeout = 2.0 #seconds
@@ -140,6 +140,8 @@ class BusPirate(object):
 		"""Perform self-test.
 		
 			@param longTest: Perform long self-test. Requires jumpers between +5 and Vpu, +3.3 and ADC. Defaults to False
+			@return: True or False
+			@rtype: bool
 		"""
 		if longTest:
 			self._sendCmd(Commands.TEST_LONG)
@@ -165,6 +167,9 @@ class BusPirate(object):
 		"""Enter protocol mode.
 	
 			@param mode: "spi","uart","i2c","1wire","raw"
+			@raise BusPirateError: if command fails
+			@raise ValueError: if parameters are invalid
+			
 		"""
 		if self.mode:
 			self.leaveMode()
@@ -208,6 +213,10 @@ class BusPirate(object):
 	
 	#voltage probe
 	def probeVoltage(self):
+		"""Perform AUX pin voltage measurement.
+			@return: measured voltage.
+			@rtype: float
+		"""
 		self._write(Commands.PROBE_VOLTAGE)
 		data = self._read(2)
 		
@@ -225,6 +234,7 @@ class BusPirate(object):
 			@keyword cs: defauls to 1
 		
 			@return: pin directions after update
+			@rtype: int
 		"""
 		
 		aux = kwargs.pop('aux',1)
@@ -237,7 +247,7 @@ class BusPirate(object):
 		self._write(chr(ord(Commands.CONFIG_PINS)|pins))
 		
 		pins = self._read(1)
-		return pins
+		return ord(pins)
 	
 	def setPins(self,**kwargs):
 		"""Set pins POWER,AUX,MOSI,CLK,MISO,CS and PULLUP on (1) or off (0).
@@ -251,6 +261,7 @@ class BusPirate(object):
 				@keyword cs: defauls to 0
 				
 				@return: pin state after update
+				@rtype: int
 		"""
 		power = kwargs.pop("power",0)
 		aux = kwargs.pop('aux',0)
@@ -264,7 +275,7 @@ class BusPirate(object):
 		self._write(chr(ord(Commands.SET_PINS)|pins))
 		
 		pins = self._read(1)
-		return pins
+		return ord(pins)
 	
 	#pwm
 	def setPWM(self,dutycycle,hz):
@@ -301,7 +312,9 @@ class BusPirate(object):
 		return True
 		
 	def stopPWM(self):
-		"""Stop outputting PWM"""
+		"""Stop outputting PWM
+			@raise BusPirateError: if command fails.
+		"""
 		self._sendCmd(*CommandResponsePairs.PWM_CLEAR)
 		return True
 	
@@ -310,19 +323,28 @@ class BusPirate(object):
 		return self.enterMode("uart")
 	
 	def uartStartEcho(self):
-		"""Start uart echo mode. Received data can be """
+		"""Start uart echo mode. Incoming data can be inspected with uartBytesAvailable and uartReceive
+			@raise BusPirateError: if command fails.
+		
+		"""
 		self._checkMode(Modes.UART)
 		self._sendCmd(*CommandResponsePairs.UART_START_ECHO)
 		self._uartEcho = True
 		return True
 		
 	def uartStopEcho(self):
+		"""Stop uart echo mode.
+			@raise BusPirateError: if command fails.
+		"""
 		self._checkMode(Modes.UART)
 		self._sendCmd(*CommandResponsePairs.UART_STOP_ECHO)
 		return True
 		
 	def uartWrite(self,data):
-		"""Writes data to uart"""
+		"""Writes data to uart
+			@raise BusPirateError: if command fails.
+		
+		"""
 		self._checkMode(Modes.UART)
 		if not self._uartEcho:
 			raise BusPirateError("Not in UART echo mode")
@@ -343,6 +365,10 @@ class BusPirate(object):
 		return True
 	
 	def uartBytesAvailable(self):
+		"""Returns number of bytes avaiable in uart echo mode.
+			
+			@raise BusPirateError: if command fails.
+		"""
 		self._checkMode(Modes.UART)
 		if not self._uartEcho:
 			raise BusPirateError("Not in UART echo mode")
@@ -350,6 +376,10 @@ class BusPirate(object):
 		return self._available()
 		
 	def uartReceive(self,size=1):
+		"""Receive bytes in uart echo mode.
+			@param size: number of bytes to read
+			@raise BusPirateError: if command fails.
+		"""
 		self._checkMode(Modes.UART)
 		if not self._uartEcho:
 			raise BusPirateError("Not in UART echo mode")
@@ -357,7 +387,11 @@ class BusPirate(object):
 		return self._read(size)
 		
 	def uartSetSpeed(self,baudrate=9600):
-		"""configures uart baudrate"""
+		"""configures uart baudrate
+			@param baudrate: 300,1200,2400,4800,9600,19200,31250,28400,57600,115200
+			@raise BusPirateError: if command fails.
+			@raise ValueError: if parameter is invalid
+		"""
 		self._checkMode(Modes.UART)
 
 		rates = { 300 : 0,  1200 : 0b0001, 2400: 0b0010,4800 : 0b0011,9600 : 0b0100,19200: 0b0101,31250 : 0b0110, 38400 : 0b0111,57600 : 0b1000,115200 : 0b1010}
@@ -374,6 +408,8 @@ class BusPirate(object):
 			@keyword pullups: defaults to 0
 			@keyword aux: defaults to 0
 			@keyword cs: defaults to 0
+			@raise BusPirateError: if command fails.
+			
 		"""
 		self._checkMode(Modes.UART)
 		
@@ -386,6 +422,8 @@ class BusPirate(object):
 			@keyword parity: 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'
 			@keyword stopbits: stop bits , defaults to 1
 			@keyword polarity: 0 = idle high, 1 = idle low, defaults to idle high (0)
+			@raise BusPirateError: if command fails.
+			@raise ValueError: if parameters are invalid.
 		"""
 		self._checkMode(Modes.UART)
 		
