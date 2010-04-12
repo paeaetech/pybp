@@ -97,14 +97,18 @@ class CommandResponsePairs:
 	
 	
 class BusPirate(object):
-	"""BusPirate interface class"""
+	"""BusPirate interface class
+	
+		If not otherwise stated, all functions return True or raise BusPirateError if command fails.
+		Also ValueError is raised if function parameters are invalid.
+	"""
 	
 	def __init__(self, port,**kwargs):
-		"""arguments: 
+		"""Parameters: 
 			port -- serial port to use
 			
-			keyword arguments:
-				baudrate -- baudrate to use, defaults to 115200
+			Keyword Parameters:
+				- baudrate -- baudrate to use, defaults to 115200
 		"""
 		super(BusPirate, self).__init__()
 
@@ -136,8 +140,8 @@ class BusPirate(object):
 	
 	def selfTest(self,longTest=False):
 		"""Perform self-test
-			arguments:
-				longTest -- Perform long self-test. Requires jumpers between +5 and Vpu, +3.3 and ADC. Defaults to False
+			Parameters:
+				- longTest -- Perform long self-test. Requires jumpers between +5 and Vpu, +3.3 and ADC. Defaults to False
 		"""
 		if longTest:
 			self._sendCmd(Commands.TEST_LONG)
@@ -162,8 +166,8 @@ class BusPirate(object):
 	def enterMode(self,mode=""):
 		"""Enter protocol mode
 	
-			Arguments:
-				mode -- "spi","uart","i2c","1wire","raw"
+			Parameters:
+				- mode -- "spi","uart","i2c","1wire","raw"
 		"""
 		if self.mode:
 			self.leaveMode()
@@ -184,7 +188,7 @@ class BusPirate(object):
 			elif mode == Modes.RAW:
 				pair = CommandResponsePairs.ENTER_RAW
 			else:
-				raise BusPirateError("Invalid mode '%s'" % mode)
+				raise ValueError("Invalid mode '%s'" % mode)
 
 			cmd,response = pair
 			self._sendCmd(cmd,response)
@@ -196,7 +200,8 @@ class BusPirate(object):
 		return True
 		
 	def leaveMode(self):
-		"""Leave protocol mode"""
+		"""Leave protocol mode."""
+	
 		if not self.mode:
 			raise BusPirateError("Not in protocol mode")
 			
@@ -215,14 +220,14 @@ class BusPirate(object):
 		
 	def configPins(self,**kwargs):
 		"""Configure AUX,MOSI,CLK,MISO and CS as inputs (1) or outputs (0).
-			Keyworded arguments:
-				aux -- defaults to 1
-				mosi -- defaults to 1
-				clk -- defaults to 1
-				miso -- defaults to 1
-				cs -- defauls to 1
+			Keyword parameters:
+				- aux -- defaults to 1
+				- mosi -- defaults to 1
+				- clk -- defaults to 1
+				- miso -- defaults to 1
+				- cs -- defauls to 1
 			Returns:
-				pin directions after update
+				- pin directions after update
 		"""
 		
 		aux = kwargs.pop('aux',1)
@@ -239,16 +244,16 @@ class BusPirate(object):
 	
 	def setPins(self,**kwargs):
 		"""Set pins POWER,AUX,MOSI,CLK,MISO,CS and PULLUP on (1) or off (0).
-			Keyworded arguments:
-				power -- defaults to 0
-				pullup -- defaults to 0
-				aux -- defaults to 0
-				mosi -- defaults to 0
-				clk -- defaults to 0
-				miso -- defaults to 0
-				cs -- defauls to 0
+			Keyword parameters:
+				- power -- defaults to 0
+				- pullup -- defaults to 0
+				- aux -- defaults to 0
+				- mosi -- defaults to 0
+				- clk -- defaults to 0
+				- miso -- defaults to 0
+				- cs -- defauls to 0
 			Returns:
-				pin state after update
+				- pin state after update
 		"""
 		power = kwargs.pop("power",0)
 		aux = kwargs.pop('aux',0)
@@ -267,9 +272,9 @@ class BusPirate(object):
 	#pwm
 	def setPWM(self,dutycycle,hz):
 		"""Set AUX pin PWM
-			Arguments:
-				duty -- dutycycle 0.0 - 1.0
-				hz -- pwm frequency
+			Parameters:
+				- duty -- dutycycle 0.0 - 1.0
+				- hz -- pwm frequency
 		"""
 		prescaler = 0
 		period = 0
@@ -362,18 +367,18 @@ class BusPirate(object):
 		rates = { 300 : 0,  1200 : 0b0001, 2400: 0b0010,4800 : 0b0011,9600 : 0b0100,19200: 0b0101,31250 : 0b0110, 38400 : 0b0111,57600 : 0b1000,115200 : 0b1010}
 		
 		if baudrate not in rates:
-			raise BusPirateError("Invalid baudrate '%d'" % baudrate)
+			raise ValueError("Invalid baudrate '%d'" % baudrate)
 		
 		self._sendCmd(chr(ord(Commands.UART_SET_BAUDRATE)|rates[baudrate]),Responses.OK)
 		return True
 		
 	def uartSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword arguments:
-				power  -- defaults to 0
-				pullups -- defaults to 0
-				aux -- defaults to 0
-				cs -- defaults to 0
+			Keyword parameters:
+				- power  -- defaults to 0
+				- pullups -- defaults to 0
+				- aux -- defaults to 0
+				- cs -- defaults to 0
 		"""
 		self._checkMode(Modes.UART)
 		
@@ -381,12 +386,12 @@ class BusPirate(object):
 		
 	def uartSetConfig(self,**kwargs):
 		"""Set UART configuration.
-			Keyword arguments:
-				output -- 0 = HiZ, 1 = 3.3v, defaults to HiZ (0)
-				databits -- 8 or 9, defaults to 8
-				parity -- 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'
-				stopbits -- stop bits , defaults to 1
-				polarity -- 0 = idle high, 1 = idle low, defaults to idle high (0)
+			Keyword parameters:
+				- output -- 0 = HiZ, 1 = 3.3v, defaults to HiZ (0)
+				- databits -- 8 or 9, defaults to 8
+				- parity -- 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'
+				- stopbits -- stop bits , defaults to 1
+				- polarity -- 0 = idle high, 1 = idle low, defaults to idle high (0)
 		"""
 		self._checkMode(Modes.UART)
 		
@@ -398,20 +403,20 @@ class BusPirate(object):
 		
 		#verify parameters
 		if output != 0 and output != 1:
-			raise BusPirateError("Output value is invalid")
+			raise ValueError("Output value is invalid")
 		if stopbits != 0 and stopbits != 1:
-			raise BusPirateError("Stopbits value is invalid")
+			raise ValueError("Stopbits value is invalid")
 		if polarity != 0 and polarity != 1:
-			raise BusPirateError("Polarity is invalid")
+			raise ValueError("Polarity is invalid")
 		
 		#combine databits and parity
 		dp = 0
 		if parity not in 'eno':
-			raise BusPirateError("Parity is invalid")
+			raise ValueError("Parity is invalid")
 			
 		if databits == 9:
 			if parity == 'e':
-				raise BusPirateError("Parity cannot be even if databits is 9")
+				raise ValueError("Parity cannot be even if databits is 9")
 			else:
 				dp = 3
 		elif databits == 8:
@@ -422,7 +427,7 @@ class BusPirate(object):
 			elif parity == 'o':
 				dp = 2
 		else:
-			raise BusPirateError("Databits value is invalid.")
+			raise ValueError("Databits value is invalid.")
 		
 		self._sendCmd(chr(ord(Commands.UART_SET_CONFIG) | (output<<4) | (dp << 3) | (stopbits << 1) | polarity),Responses.OK)
 		return True
@@ -475,11 +480,11 @@ class BusPirate(object):
 		
 	def i2cSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword arguments:
-				power  -- defaults to 0
-				pullups -- defaults to 0
-				aux -- defaults to 0
-				cs -- defaults to 0
+			Keyword parameters:
+				- power  -- defaults to 0
+				- pullups -- defaults to 0
+				- aux -- defaults to 0
+				- cs -- defaults to 0
 		"""
 
 		self._checkMode(Modes.I2C)
@@ -527,11 +532,11 @@ class BusPirate(object):
 		
 	def spiSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword arguments:
-				power  -- defaults to 0
-				pullups -- defaults to 0
-				aux -- defaults to 0
-				cs -- defaults to 0
+			Keyword parameters:
+				- power  -- defaults to 0
+				- pullups -- defaults to 0
+				- aux -- defaults to 0
+				- cs -- defaults to 0
 		"""
 
 		self._checkMode(Modes.SPI)
@@ -587,11 +592,11 @@ class BusPirate(object):
 		
 	def onewireSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword arguments:
-				power  -- defaults to 0
-				pullups -- defaults to 0
-				aux -- defaults to 0
-				cs -- defaults to 0
+			Keyword parameters:
+				- power  -- defaults to 0
+				- pullups -- defaults to 0
+				- aux -- defaults to 0
+				- cs -- defaults to 0
 		"""
 
 		self._checkMode(Modes.ONEWIRE)
@@ -644,11 +649,11 @@ class BusPirate(object):
 	
 	def rawSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword arguments:
-				power  -- defaults to 0
-				pullups -- defaults to 0
-				aux -- defaults to 0
-				cs -- defaults to 0
+			Keyword parameters:
+				- power  -- defaults to 0
+				- pullups -- defaults to 0
+				- aux -- defaults to 0
+				- cs -- defaults to 0
 		"""
 		
 		self._checkMode(Modes.RAW)
