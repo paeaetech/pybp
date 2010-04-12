@@ -104,11 +104,9 @@ class BusPirate(object):
 	"""
 	
 	def __init__(self, port,**kwargs):
-		"""Parameters: 
-			port -- serial port to use
-			
-			Keyword Parameters:
-				- baudrate -- baudrate to use, defaults to 115200
+		"""
+			@param port: serial port to use
+			@keyword baudrate: baudrate to use, defaults to 115200
 		"""
 		super(BusPirate, self).__init__()
 
@@ -120,8 +118,8 @@ class BusPirate(object):
 		self.serial = None
 		self.open()
 	
-	"""Opens connection to BusPirate and enters binary mode. Closes existing connection if already open"""
 	def open(self):
+		"""Opens connection to BusPirate and enters binary mode. Closes existing connection if already open"""
 		self.close()
 		self.serial = self.unittestSerial or serial.Serial(self.port,self.baudrate)
 		self.serial.timeout = 2.0 #seconds
@@ -131,17 +129,17 @@ class BusPirate(object):
 		
 		self._enterBinaryMode()
 		
-	"""Resets BusPirate and closes serial connection"""
 	def close(self):
+		"""Resets BusPirate and closes serial connection"""
 		if self.serial:
 			self._sendCmd(Commands.RESET_USER)
 			self.serial.close()
 			self.serial=None
 	
 	def selfTest(self,longTest=False):
-		"""Perform self-test
-			Parameters:
-				- longTest -- Perform long self-test. Requires jumpers between +5 and Vpu, +3.3 and ADC. Defaults to False
+		"""Perform self-test.
+		
+			@param longTest: Perform long self-test. Requires jumpers between +5 and Vpu, +3.3 and ADC. Defaults to False
 		"""
 		if longTest:
 			self._sendCmd(Commands.TEST_LONG)
@@ -164,10 +162,9 @@ class BusPirate(object):
 		return result[0] == chr(0)
 		
 	def enterMode(self,mode=""):
-		"""Enter protocol mode
+		"""Enter protocol mode.
 	
-			Parameters:
-				- mode -- "spi","uart","i2c","1wire","raw"
+			@param mode: "spi","uart","i2c","1wire","raw"
 		"""
 		if self.mode:
 			self.leaveMode()
@@ -220,14 +217,14 @@ class BusPirate(object):
 		
 	def configPins(self,**kwargs):
 		"""Configure AUX,MOSI,CLK,MISO and CS as inputs (1) or outputs (0).
-			Keyword parameters:
-				- aux -- defaults to 1
-				- mosi -- defaults to 1
-				- clk -- defaults to 1
-				- miso -- defaults to 1
-				- cs -- defauls to 1
-			Returns:
-				- pin directions after update
+		
+			@keyword aux: defaults to 1
+			@keyword mosi: defaults to 1
+			@keyword clk: defaults to 1
+			@keyword miso: defaults to 1
+			@keyword cs: defauls to 1
+		
+			@return: pin directions after update
 		"""
 		
 		aux = kwargs.pop('aux',1)
@@ -244,16 +241,16 @@ class BusPirate(object):
 	
 	def setPins(self,**kwargs):
 		"""Set pins POWER,AUX,MOSI,CLK,MISO,CS and PULLUP on (1) or off (0).
-			Keyword parameters:
-				- power -- defaults to 0
-				- pullup -- defaults to 0
-				- aux -- defaults to 0
-				- mosi -- defaults to 0
-				- clk -- defaults to 0
-				- miso -- defaults to 0
-				- cs -- defauls to 0
-			Returns:
-				- pin state after update
+				
+				@keyword power: defaults to 0
+				@keyword pullup: defaults to 0
+				@keyword aux: defaults to 0
+				@keyword mosi: defaults to 0
+				@keyword clk: defaults to 0
+				@keyword miso: defaults to 0
+				@keyword cs: defauls to 0
+				
+				@return: pin state after update
 		"""
 		power = kwargs.pop("power",0)
 		aux = kwargs.pop('aux',0)
@@ -272,9 +269,8 @@ class BusPirate(object):
 	#pwm
 	def setPWM(self,dutycycle,hz):
 		"""Set AUX pin PWM
-			Parameters:
-				- duty -- dutycycle 0.0 - 1.0
-				- hz -- pwm frequency
+			@keyword duty: dutycycle (0.0 - 1.0)
+			@keyword hz: pwm frequency
 		"""
 		prescaler = 0
 		period = 0
@@ -308,8 +304,8 @@ class BusPirate(object):
 		"""Stop outputting PWM"""
 		self._sendCmd(*CommandResponsePairs.PWM_CLEAR)
 		return True
-		
-	#uart functions
+	
+	#{	UART functions
 	def uartEnter(self):
 		return self.enterMode("uart")
 	
@@ -374,11 +370,10 @@ class BusPirate(object):
 		
 	def uartSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword parameters:
-				- power  -- defaults to 0
-				- pullups -- defaults to 0
-				- aux -- defaults to 0
-				- cs -- defaults to 0
+			@keyword power: defaults to 0
+			@keyword pullups: defaults to 0
+			@keyword aux: defaults to 0
+			@keyword cs: defaults to 0
 		"""
 		self._checkMode(Modes.UART)
 		
@@ -386,12 +381,11 @@ class BusPirate(object):
 		
 	def uartSetConfig(self,**kwargs):
 		"""Set UART configuration.
-			Keyword parameters:
-				- output -- 0 = HiZ, 1 = 3.3v, defaults to HiZ (0)
-				- databits -- 8 or 9, defaults to 8
-				- parity -- 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'
-				- stopbits -- stop bits , defaults to 1
-				- polarity -- 0 = idle high, 1 = idle low, defaults to idle high (0)
+			@keyword output: 0 = HiZ, 1 = 3.3v, defaults to HiZ (0)
+			@keyword databits: 8 or 9, defaults to 8
+			@keyword parity: 'N' (none) or 'E' (even) or 'O' (odd), defaults to 'N'
+			@keyword stopbits: stop bits , defaults to 1
+			@keyword polarity: 0 = idle high, 1 = idle low, defaults to idle high (0)
 		"""
 		self._checkMode(Modes.UART)
 		
@@ -434,14 +428,15 @@ class BusPirate(object):
 		
 	def uartBridgeMode(self):
 		"""Enters UART bridge mode. NOTE: Bridge mode cannot be exited programmatically, Bus Pirate has to be reseted manually.
-			Returns: serial instance which can be used directly
+
+			@return: a pyserial instance which can be used directly
 		"""
 		self._checkMode(Modes.UART)
 		self._sendCmd(Commands.UART_ENTER_BRIDGE)
 		return self.serial
+	#}	
 		
-		
-	#i2c functions
+	#{ I2C functions
 	def i2cEnter(self):
 		return self.enterMode("i2c")
 		
@@ -480,11 +475,10 @@ class BusPirate(object):
 		
 	def i2cSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword parameters:
-				- power  -- defaults to 0
-				- pullups -- defaults to 0
-				- aux -- defaults to 0
-				- cs -- defaults to 0
+			@keyword power: defaults to 0
+			@keyword pullups: defaults to 0
+			@keyword aux: defaults to 0
+			@keyword cs: defaults to 0
 		"""
 
 		self._checkMode(Modes.I2C)
@@ -495,8 +489,9 @@ class BusPirate(object):
 		self._checkMode(Modes.I2C)
 
 		raise NotImplementedError
-		
-	#spi functions
+	
+	#}	
+	#{ SPI functions
 	def spiEnter(self):
 		return self.enterMode("spi")
 		
@@ -532,11 +527,10 @@ class BusPirate(object):
 		
 	def spiSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword parameters:
-				- power  -- defaults to 0
-				- pullups -- defaults to 0
-				- aux -- defaults to 0
-				- cs -- defaults to 0
+			@keyword power: defaults to 0
+			@keyword pullups: defaults to 0
+			@keyword aux: defaults to 0
+			@keyword cs: defaults to 0
 		"""
 
 		self._checkMode(Modes.SPI)
@@ -557,9 +551,9 @@ class BusPirate(object):
 		self._checkMode(Modes.SPI)
 
 		raise NotImplementedError
+	#}	
 		
-		
-	#1-wire functions
+	#{ 1-wire functions
 	def onewireEnter(self):
 		self._checkMode(Modes.ONEWIRE)
 
@@ -592,18 +586,18 @@ class BusPirate(object):
 		
 	def onewireSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword parameters:
-				- power  -- defaults to 0
-				- pullups -- defaults to 0
-				- aux -- defaults to 0
-				- cs -- defaults to 0
+			@keyword power: defaults to 0
+			@keyword pullups: defaults to 0
+			@keyword aux: defaults to 0
+			@keyword cs: defaults to 0
 		"""
 
 		self._checkMode(Modes.ONEWIRE)
 
 		return self._setPins(**kwargs)
-		
-	#raw functions
+	#}
+	
+	#{ RAW functions
 	def rawEnter(self):
 		return self.enterMode("raw")
 		
@@ -649,11 +643,10 @@ class BusPirate(object):
 	
 	def rawSetPins(self,**kwargs):
 		"""Configure peripherals.
-			Keyword parameters:
-				- power  -- defaults to 0
-				- pullups -- defaults to 0
-				- aux -- defaults to 0
-				- cs -- defaults to 0
+			@keyword power: defaults to 0
+			@keyword pullups: defaults to 0
+			@keyword aux: defaults to 0
+			@keyword cs: defaults to 0
 		"""
 		
 		self._checkMode(Modes.RAW)
@@ -669,7 +662,8 @@ class BusPirate(object):
 		self._checkMode(Modes.RAW)
 
 		raise NotImplementedError
-		
+	#}
+	
 	#internal functions
 	def _setPins(self,**kwargs):
 		power = kwargs.pop("power",0)
